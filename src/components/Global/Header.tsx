@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 export default function Header() {
   return (
-    <header className={cn(PROJECT_CONTAINER, 'fixed top-0 left-0 right-0 z-[99]')}>
+    <header className={cn(PROJECT_CONTAINER, 'fixed top-0 left-0 right-0 z-[99]', 'sm:bg-black')}>
       <nav className="w-[40%] xl:w-[45%] sm:w-full flex gap-20 sm:gap-6 justify-between items-center">
         <Link href={PROJECT_PATHS.root}>
           <Image src={LogoImage} alt="Логотип APT" />

@@ -1,3 +1,6 @@
+import type {TIRE_QUERYResult, TIRE_ITEM_QUERYResult} from '../../../sanity.types'
+export type {TIRE_QUERYResult, TIRE_ITEM_QUERYResult}
+
 import {sanityFetch} from '@/sanity/lib/live'
 import {defineQuery} from 'next-sanity'
 import {draftMode} from 'next/headers'
@@ -57,3 +60,6 @@ const QUERIES = {
   TIRE_QUERY,
   TIRE_ITEM_QUERY,
 } as const
+
+export const getTires = (): Promise<TIRE_QUERYResult> => fetchEntity(QUERIES.TIRE_QUERY)
+export const getTireItem = (slug: string) => fetchEntityItem<TIRE_ITEM_QUERYResult>(QUERIES.TIRE_ITEM_QUERY, {slug})

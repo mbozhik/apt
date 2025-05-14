@@ -1,6 +1,7 @@
 import MockImage from '$/logo.svg'
 
 import {cn} from '@/lib/utils'
+import {motion} from 'motion/react'
 
 import Image from 'next/image'
 
@@ -44,9 +45,15 @@ export default function Catalog({className}: {className?: string}) {
     <section data-section="catalog-index" className={cn(className)}>
       <div className={cn('px-6 xl:px-0', 'space-y-8 xl:space-y-6')}>
         {[1, 2, 3, 4].map((item, index) => (
-          <div key={item}>
+          <motion.div
+            key={item}
+            initial={{opacity: 0, y: index === 0 ? 0 : 50}} // first not moving
+            whileInView={{opacity: 1, y: 0}}
+            transition={{duration: 0.5, delay: index * 0.1}}
+            viewport={{once: true}}
+          >
             <Card />
-          </div>
+          </motion.div>
         ))}
       </div>
     </section>

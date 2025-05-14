@@ -3,6 +3,8 @@ import {manrope} from '@/lib/layout-config'
 
 import './globals.css'
 
+import Header from '~/Global/Header'
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -10,7 +12,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${manrope.variable} bg-black text-white font-manrope antialiased`}>{children}</body>
+      <body className={`${manrope.variable} bg-black text-white font-manrope antialiased`}>
+        <Header />
+
+        {children}
+      </body>
     </html>
   )
 }

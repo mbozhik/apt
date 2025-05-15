@@ -23,14 +23,18 @@ export const typoClasses = {
   h1: 'text-8xl xl:text-7xl sm:text-[44px]',
   h2: 'text-5xl xl:text-3xl sm:text-xl',
   h3: 'text-4xl sm:text-3xl font-bold',
+  h4: 'text-4xl xl:text-3xl sm:text-[28px] font-medium',
   h5: 'text-2xl xl:text-xl',
-  span: 'text-base xl:text-sm sm:text-base leading-[1.3]',
+  p: 'text-xl xl:text-lg !leading-[1.3] sm:!leading-[1.4]',
+  span: 'text-base xl:text-sm sm:text-base !leading-[1.3] sm:!leading-[1.4]',
 } as const
 
 export const H1 = createTypography('h1')
 export const H2 = createTypography('h2')
 export const H3 = createTypography('h3')
+export const H4 = createTypography('h4')
 export const H5 = createTypography('h5')
+export const P = createTypography('p')
 export const SPAN = createTypography('span')
 
 const variants = {
@@ -91,7 +95,7 @@ type MotionElementType = {
 function Typography({type, className, children, animated = true, by = 'line', offset, ...props}: Props) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
 
-  const offsetValue = offset ?? (isDesktop ? 100 : 25)
+  const offsetValue = offset ?? (isDesktop ? 70 : 25)
 
   const Element = type
   const ref = React.useRef<ElementType>(null)

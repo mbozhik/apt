@@ -1,18 +1,28 @@
 import type {TIRE_ITEM_QUERYResult} from '@/sanity/lib/requests'
-import {PROJECT_PADDING} from '@/lib/constants'
 
 import {cn} from '@/lib/utils'
 
+import {H4, P} from '~/UI/Typography'
 import {CatalogCard} from '~~/index/Catalog'
 
 export default function Details({data}: {data: TIRE_ITEM_QUERYResult}) {
   return (
-    <section data-section="details-tire" className="grid grid-cols-8 sm:grid-cols-1 sm:gap-6">
-      <div className={cn(PROJECT_PADDING, 'col-span-5')}>
-        <h4 className="text-4xl font-medium">Особенности:</h4>
+    <section data-section="details-tire" className="grid grid-cols-8 sm:flex sm:flex-col-reverse gap-20 xl:gap-10 sm:gap-8">
+      <div className={cn('col-span-5', 'pt-28 xl:pt-24 sm:pt-0', 'space-y-8 xl:space-y-6 sm:space-y-4')}>
+        <H4>Особенности:</H4>
+
+        <div className="sm:px-2 grid grid-cols-2 gap-6 sm:grid-cols-1 sm:gap-4">
+          {data?.descriptors?.map((item, idx) => (
+            <div key={idx} className="relative flex gap-3">
+              <div className="min-w-0.5 bg-orange h-full" />
+
+              <P className="flex-1">{item}</P>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <CatalogCard className="col-span-3" data={data} view="compact" />
+      <CatalogCard className={cn('col-span-3', 'sm:mt-24')} data={data} view="compact" />
     </section>
   )
 }

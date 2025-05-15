@@ -5,4 +5,4 @@ export const PROJECT_PATHS = {
   contacts: '/contacts',
 }
 
-export const PROJECT_CONTAINER = 'px-14 py-11 sm:px-2 sm:py-3'
+export const PROJECT_CONTAINER = 'px-14 py-11 xl:px-11 sm:px-2 sm:py-3'

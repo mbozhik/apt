@@ -4,6 +4,7 @@ import {PROJECT_CONTAINER} from '@/lib/constants'
 import {getTireItem} from '@/sanity/lib/requests'
 
 import {cn} from '@/lib/utils'
+import Details from '~~/tire/Details'
 
 type Props = {
   params: Promise<{slug: string}>
@@ -22,5 +23,9 @@ export default async function TireItemPage({params}: Props) {
   const slug = (await params).slug
   const tire = await getTireItem(slug)
 
-  return <main className={cn(PROJECT_CONTAINER)}>{tire?.naming}</main>
+  return (
+    <main className={cn(PROJECT_CONTAINER)}>
+      <Details data={tire} />
+    </main>
+  )
 }

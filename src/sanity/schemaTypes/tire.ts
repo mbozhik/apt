@@ -23,6 +23,23 @@ export const tire = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'token',
+      title: 'Токен',
+      type: 'slug',
+      options: {
+        source: 'naming',
+        slugify: (input: string): string => {
+          return input
+            .split(' ')
+            .filter((word: string) => word.length > 0)
+            .map((word: string) => word.charAt(0))
+            .join('')
+            .toUpperCase()
+        },
+      },
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
       name: 'id',
       title: 'ID',
       type: 'number',
@@ -71,14 +88,15 @@ export const tire = defineType({
   preview: {
     select: {
       naming: 'naming',
+      token: 'token',
       id: 'id',
       image: 'image',
     },
 
-    prepare({naming, id, image}) {
+    prepare({naming, token, id, image}) {
       return {
         title: naming,
-        subtitle: id,
+        subtitle: `${id} | ${token.current}`,
         media: image,
       }
     },

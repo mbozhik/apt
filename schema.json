@@ -373,7 +373,15 @@
           "type": "inline",
           "name": "slug"
         },
-        "optional": true
+        "optional": false
+      },
+      "token": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "slug"
+        },
+        "optional": false
       },
       "id": {
         "type": "objectAttribute",

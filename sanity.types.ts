@@ -75,7 +75,8 @@ export type Tire = {
   _updatedAt: string;
   _rev: string;
   naming: string;
-  slug?: Slug;
+  slug: Slug;
+  token: Slug;
   id: number;
   image?: {
     asset?: {
@@ -163,10 +164,11 @@ export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./src/sanity/lib/requests.ts
 // Variable: TIRE_QUERY
-// Query: *[_type == "tire"]{        naming, slug, id, image, params, descriptors,    }
+// Query: *[_type == "tire"]{        naming, slug, token, id, image, params, descriptors,    }
 export type TIRE_QUERYResult = Array<{
   naming: string;
-  slug: Slug | null;
+  slug: Slug;
+  token: Slug;
   id: number;
   image: {
     asset?: {
@@ -187,10 +189,11 @@ export type TIRE_QUERYResult = Array<{
   descriptors: Array<string> | null;
 }>;
 // Variable: TIRE_ITEM_QUERY
-// Query: *[_type == "tire" && slug.current == $slug][0]{        naming, slug, id, image, params, descriptors,    }
+// Query: *[_type == "tire" && slug.current == $slug][0]{        naming, slug, token, id, image, params, descriptors,    }
 export type TIRE_ITEM_QUERYResult = {
   naming: string;
-  slug: Slug | null;
+  slug: Slug;
+  token: Slug;
   id: number;
   image: {
     asset?: {
@@ -215,7 +218,7 @@ export type TIRE_ITEM_QUERYResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "\n    *[_type == \"tire\"]{\n        naming, slug, id, image, params, descriptors,\n    }": TIRE_QUERYResult;
-    "\n    *[_type == \"tire\" && slug.current == $slug][0]{\n        naming, slug, id, image, params, descriptors,\n    }": TIRE_ITEM_QUERYResult;
+    "\n    *[_type == \"tire\"]{\n        naming, slug, token, id, image, params, descriptors,\n    }": TIRE_QUERYResult;
+    "\n    *[_type == \"tire\" && slug.current == $slug][0]{\n        naming, slug, token, id, image, params, descriptors,\n    }": TIRE_ITEM_QUERYResult;
   }
 }

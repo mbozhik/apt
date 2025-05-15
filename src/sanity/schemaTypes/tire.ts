@@ -15,10 +15,18 @@ export const tire = defineType({
     }),
     defineField({
       name: 'slug',
+      title: 'URL',
       type: 'slug',
       options: {
         source: 'naming',
       },
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'id',
+      title: 'ID',
+      type: 'number',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'image',
@@ -27,6 +35,25 @@ export const tire = defineType({
       options: {
         hotspot: true,
       },
+    }),
+    defineField({
+      name: 'params',
+      title: 'Параметры',
+      type: 'object',
+      fields: [
+        {
+          name: 'sh',
+          title: 'SH',
+          type: 'number',
+          validation: (Rule) => Rule.required(),
+        },
+        {
+          name: 'qh',
+          title: 'QH',
+          type: 'number',
+          validation: (Rule) => Rule.required(),
+        },
+      ],
     }),
     defineField({
       name: 'descriptors',
@@ -43,9 +70,17 @@ export const tire = defineType({
   ],
   preview: {
     select: {
-      title: 'naming',
-      subtitle: 'slug.current',
-      media: 'image',
+      naming: 'naming',
+      id: 'id',
+      image: 'image',
+    },
+
+    prepare({naming, id, image}) {
+      return {
+        title: naming,
+        subtitle: id,
+        media: image,
+      }
     },
   },
 })

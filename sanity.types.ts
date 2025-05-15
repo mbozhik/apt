@@ -76,6 +76,7 @@ export type Tire = {
   _rev: string;
   naming: string;
   slug?: Slug;
+  id: number;
   image?: {
     asset?: {
       _ref: string;
@@ -87,6 +88,10 @@ export type Tire = {
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
+  };
+  params?: {
+    sh: number;
+    qh: number;
   };
   descriptors?: Array<string>;
 };
@@ -158,10 +163,11 @@ export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./src/sanity/lib/requests.ts
 // Variable: TIRE_QUERY
-// Query: *[_type == "tire"]{        naming, slug, image, descriptors,    }
+// Query: *[_type == "tire"]{        naming, slug, id, image, params, descriptors,    }
 export type TIRE_QUERYResult = Array<{
   naming: string;
   slug: Slug | null;
+  id: number;
   image: {
     asset?: {
       _ref: string;
@@ -174,13 +180,18 @@ export type TIRE_QUERYResult = Array<{
     crop?: SanityImageCrop;
     _type: "image";
   } | null;
+  params: {
+    sh: number;
+    qh: number;
+  } | null;
   descriptors: Array<string> | null;
 }>;
 // Variable: TIRE_ITEM_QUERY
-// Query: *[_type == "tire" && slug.current == $slug][0]{        naming, slug, image, descriptors,    }
+// Query: *[_type == "tire" && slug.current == $slug][0]{        naming, slug, id, image, params, descriptors,    }
 export type TIRE_ITEM_QUERYResult = {
   naming: string;
   slug: Slug | null;
+  id: number;
   image: {
     asset?: {
       _ref: string;
@@ -192,6 +203,10 @@ export type TIRE_ITEM_QUERYResult = {
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
+  } | null;
+  params: {
+    sh: number;
+    qh: number;
   } | null;
   descriptors: Array<string> | null;
 } | null;
@@ -200,7 +215,7 @@ export type TIRE_ITEM_QUERYResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "\n    *[_type == \"tire\"]{\n        naming, slug, image, descriptors,\n    }": TIRE_QUERYResult;
-    "\n    *[_type == \"tire\" && slug.current == $slug][0]{\n        naming, slug, image, descriptors,\n    }": TIRE_ITEM_QUERYResult;
+    "\n    *[_type == \"tire\"]{\n        naming, slug, id, image, params, descriptors,\n    }": TIRE_QUERYResult;
+    "\n    *[_type == \"tire\" && slug.current == $slug][0]{\n        naming, slug, id, image, params, descriptors,\n    }": TIRE_ITEM_QUERYResult;
   }
 }

@@ -2,5 +2,5 @@
 @config '../../tailwind.config.ts';
 
 #sanity {
-  @apply relative z-[9999];
+  @apply relative z-[999];
 }

@@ -375,6 +375,13 @@
         },
         "optional": true
       },
+      "id": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": false
+      },
       "image": {
         "type": "objectAttribute",
         "value": {
@@ -439,6 +446,29 @@
                 "type": "string",
                 "value": "image"
               }
+            }
+          }
+        },
+        "optional": true
+      },
+      "params": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "object",
+          "attributes": {
+            "sh": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "number"
+              },
+              "optional": false
+            },
+            "qh": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "number"
+              },
+              "optional": false
             }
           }
         },

@@ -4,3 +4,17 @@
 #sanity {
   @apply relative z-[999];
 }
+
+[data-section='sheet-tire'] {
+  &::-webkit-scrollbar {
+    @apply size-2.5;
+  }
+
+  &::-webkit-scrollbar-track {
+    @apply bg-white/10;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @apply bg-orange;
+  }
+}

@@ -1,7 +1,11 @@
 'use client'
 
-import {useState, useEffect} from 'react'
+import {ArrowLeft, ArrowRight} from 'lucide-react'
+
+import {useState, useEffect, useRef} from 'react'
 import axios from 'axios'
+
+import {cn} from '@/lib/utils'
 
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '~/UI/Table'
 import Skeleton from '~/UI/Skeleton'
@@ -27,6 +31,7 @@ export default function Sheet({token}: {token: string}) {
   const [data, setData] = useState<ApiResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const containerRef = useRef<HTMLTableElement>(null)
 
   useEffect(() => {
     if (!token) {
@@ -134,6 +139,19 @@ export default function Sheet({token}: {token: string}) {
     )
   }
 
+  const scroll = (direction: 'left' | 'right') => {
+    if (!containerRef.current) return
+
+    const scrollAmount = 200
+    const currentScroll = containerRef.current.scrollLeft
+    const newScroll = direction === 'left' ? currentScroll - scrollAmount : currentScroll + scrollAmount
+
+    containerRef.current.scrollTo({
+      left: newScroll,
+      behavior: 'smooth',
+    })
+  }
+
   if (loading) {
     return (
       <section data-section="loading-sheet-tire" className="space-y-3">
@@ -175,8 +193,14 @@ export default function Sheet({token}: {token: string}) {
   const tireData = data[token].data
 
   return (
-    <section data-section="sheet-tire" data-token={token} className="relative w-full overflow-x-auto">
-      <Table>
+    <section data-section="sheet-tire" data-token={token} className={cn('relative w-full', 'space-y-4')}>
+      <div data-block="controllers-sheet-tire" className="flex gap-1 items-end justify-end">
+        <ArrowLeft onClick={() => scroll('left')} className="size-8 hover:text-orange duration-200" strokeWidth={1.7} />
+
+        <ArrowRight onClick={() => scroll('right')} className="size-8 hover:text-orange duration-200" strokeWidth={1.7} />
+      </div>
+
+      <Table data-block="table-sheet-tire" ref={containerRef} className="block overflow-x-auto">
         <SheetHeader />
 
         <TableBody>

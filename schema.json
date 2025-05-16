@@ -459,28 +459,12 @@
         },
         "optional": true
       },
-      "params": {
+      "decoding": {
         "type": "objectAttribute",
         "value": {
-          "type": "object",
-          "attributes": {
-            "sh": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "number"
-              },
-              "optional": false
-            },
-            "qh": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "number"
-              },
-              "optional": false
-            }
-          }
+          "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "descriptors": {
         "type": "objectAttribute",

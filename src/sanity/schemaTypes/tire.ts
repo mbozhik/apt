@@ -54,23 +54,11 @@ export const tire = defineType({
       },
     }),
     defineField({
-      name: 'params',
-      title: 'Параметры',
-      type: 'object',
-      fields: [
-        {
-          name: 'sh',
-          title: 'SH',
-          type: 'number',
-          validation: (Rule) => Rule.required(),
-        },
-        {
-          name: 'qh',
-          title: 'QH',
-          type: 'number',
-          validation: (Rule) => Rule.required(),
-        },
-      ],
+      name: 'decoding',
+      title: 'Расшифровка',
+      type: 'text',
+      rows: 2,
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'descriptors',

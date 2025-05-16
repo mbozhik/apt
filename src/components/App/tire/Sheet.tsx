@@ -7,7 +7,7 @@ import axios from 'axios'
 
 import {cn} from '@/lib/utils'
 
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '~/UI/Table'
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow, CELL_STYLES} from '~/UI/Table'
 import Skeleton from '~/UI/Skeleton'
 import {P} from '~/UI/Typography'
 
@@ -144,7 +144,7 @@ export default function Sheet({token}: {token: string}) {
               }
 
               return (
-                <TableHead key={cellId} rowSpan={spans.rowSpan} colSpan={spans.colSpan}>
+                <TableHead key={cellId} rowSpan={spans.rowSpan} colSpan={spans.colSpan} className={cn(col.columnIndex === 0 && CELL_STYLES.active)}>
                   {col.headerValues[rowIndex]}
                 </TableHead>
               )
@@ -210,27 +210,28 @@ export default function Sheet({token}: {token: string}) {
 
   return (
     <section data-section="sheet-tire" data-token={token} className={cn('relative w-full', 'space-y-4')}>
-      <div data-block="controllers-sheet-tire" className="flex gap-1 items-end justify-end">
+      <div data-block="controllers-sheet-tire" className="flex gap-1 sm:gap-4 items-end justify-end">
         <ArrowLeft onClick={() => scroll('left')} className="size-8 hover:text-orange duration-200" strokeWidth={1.7} />
 
         <ArrowRight onClick={() => scroll('right')} className="size-8 hover:text-orange duration-200" strokeWidth={1.7} />
       </div>
 
-      <Table data-block="table-sheet-tire" ref={containerRef} className="block overflow-x-auto">
-        <SheetHeader />
-
-        <TableBody>
-          {tireData.map((row, rowIndex) => (
-            <TableRow key={`row-${rowIndex}`}>
-              {Object.keys(row).map((key, cellIndex) => (
-                <TableCell key={`cell-${rowIndex}-${cellIndex}`} className={cellIndex <= 0 ? 'text-orange font-bold' : ''}>
-                  {renderCellValue(row[key])}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <div data-block="table-sheet-tire" ref={containerRef} className="relative overflow-x-auto border border-white">
+        <Table>
+          <SheetHeader />
+          <TableBody>
+            {tireData.map((row, rowIndex) => (
+              <TableRow key={`row-${rowIndex}`}>
+                {Object.keys(row).map((key, cellIndex) => (
+                  <TableCell key={`cell-${rowIndex}-${cellIndex}`} className={cn(cellIndex <= 0 && [CELL_STYLES.active, 'font-bold'])}>
+                    {renderCellValue(row[key])}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </section>
   )
 }

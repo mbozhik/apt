@@ -5,7 +5,7 @@
   @apply relative z-[999];
 }
 
-[data-section='sheet-tire'] {
+[data-block='table-sheet-tire'] {
   &::-webkit-scrollbar {
     @apply size-2.5;
   }

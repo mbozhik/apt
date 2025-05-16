@@ -13,6 +13,7 @@ export default {
     colors: {
       white: '#ffffff',
       black: '#0F0F0F',
+      gray: '#303030',
 
       orange: '#B6482D',
 

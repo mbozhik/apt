@@ -28,7 +28,7 @@ export default async function TireItemPage({params}: Props) {
     <main className={cn(PROJECT_CONTAINER, 'space-y-20 sm:space-y-14')}>
       <Details data={tire} />
 
-      <Sheet />
+      <Sheet token={tire?.token.current as string} />
     </main>
   )
 }

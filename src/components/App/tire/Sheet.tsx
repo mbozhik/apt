@@ -27,6 +27,9 @@ type SheetData = {
 
 const SHEET_URL = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_URL || ''
 
+const cache = new Map<string, {data: ApiResponse; expires: number}>()
+const CACHE_DURATION = 60
+
 export default function Sheet({token}: {token: string}) {
   const [data, setData] = useState<ApiResponse | null>(null)
   const [loading, setLoading] = useState(true)
@@ -40,9 +43,22 @@ export default function Sheet({token}: {token: string}) {
       return
     }
 
+    const cached = cache.get(token)
+    if (cached && cached.expires > Date.now()) {
+      setData(cached.data)
+      setLoading(false)
+      return
+    }
+
     axios
       .get<ApiResponse>(SHEET_URL)
-      .then(({data}) => setData(data))
+      .then(({data}) => {
+        cache.set(token, {
+          data,
+          expires: Date.now() + CACHE_DURATION * 1000,
+        })
+        setData(data)
+      })
       .catch((err) => setError(err?.response?.data?.message || 'Failed to fetch data'))
       .finally(() => setLoading(false))
   }, [token])

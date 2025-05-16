@@ -4,6 +4,7 @@ import {useState, useEffect} from 'react'
 import axios from 'axios'
 
 import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow} from '~/UI/Table'
+import Skeleton from '~/UI/Skeleton'
 import {P} from '~/UI/Typography'
 
 type ApiResponse = {
@@ -49,22 +50,39 @@ export default function Sheet({token}: {token: string}) {
   }
 
   if (loading) {
-    return <div className="animate-pulse">Loading...</div>
+    return (
+      <section data-section="loading-sheet-tire" className="space-y-3">
+        <div className="flex justify-between gap-3">
+          <Skeleton className="h-10 w-full bg-orange/20" />
+          <Skeleton className="h-10 w-full bg-orange/20" />
+          <Skeleton className="h-10 w-full bg-orange/20" />
+        </div>
+
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+      </section>
+    )
   }
 
   if (error) {
     return (
-      <div className="p-4 space-y-1.5 bg-orange text-white rounded-lg">
+      <section data-section="error-sheet-tire" className="p-4 space-y-1.5 bg-orange text-white rounded-lg">
         <P className="text-center">{JSON.stringify(error)}</P>
-      </div>
+      </section>
     )
   }
 
   if (!data || !data[token] || !data[token].identifiedColumnsInfo || !data[token].data) {
     return (
-      <div className="p-4 space-y-1.5 bg-orange text-white rounded-lg">
+      <section data-section="null-sheet-tire" className="p-4 space-y-1.5 bg-orange text-white rounded-lg">
         <P className="text-center">Нет данных для токена: {token}</P>
-      </div>
+      </section>
     )
   }
 

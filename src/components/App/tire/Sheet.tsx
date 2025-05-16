@@ -3,7 +3,7 @@
 import {useState, useEffect} from 'react'
 import axios from 'axios'
 
-import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow} from '~/UI/Table'
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '~/UI/Table'
 import Skeleton from '~/UI/Skeleton'
 import {P} from '~/UI/Typography'
 
@@ -49,6 +49,91 @@ export default function Sheet({token}: {token: string}) {
     return value
   }
 
+  function SheetHeader() {
+    if (!columnInfo?.length) return null
+
+    const headerRowsCount = columnInfo[0].headerValues.length
+
+    const getHeaderSpans = (col: (typeof columnInfo)[0], rowIndex: number) => {
+      const currentValue = col.headerValues[rowIndex]
+
+      // If empty cell and not first in group, skip
+      if (!currentValue && col.columnIndex > 0) {
+        const prevCol = columnInfo[col.columnIndex - 1]
+        const prevValue = prevCol?.headerValues[rowIndex]
+        if (prevValue) return null
+      }
+
+      // Calculate rowSpan
+      let rowSpan = 1
+      if (currentValue) {
+        for (let i = rowIndex + 1; i < headerRowsCount; i++) {
+          if (!col.headerValues[i]) rowSpan++
+          else break
+        }
+      }
+
+      // Calculate colSpan
+      let colSpan = 1
+      if (currentValue) {
+        let nextIndex = col.columnIndex + 1
+        while (nextIndex < columnInfo.length) {
+          const nextCol = columnInfo[nextIndex]
+          if (nextCol.headerValues[rowIndex]) break
+
+          // Check if this column is part of the same group
+          let isPartOfGroup = true
+          for (let i = 0; i < rowIndex; i++) {
+            if (nextCol.headerValues[i]) {
+              isPartOfGroup = false
+              break
+            }
+          }
+
+          if (!isPartOfGroup) break
+          colSpan++
+          nextIndex++
+        }
+      }
+
+      return currentValue ? {rowSpan, colSpan} : null
+    }
+
+    // Track rendered cells to avoid duplicates
+    const renderedCells = new Set<string>()
+
+    return (
+      <TableHeader>
+        {Array.from({length: headerRowsCount}).map((_, rowIndex) => (
+          <TableRow key={`row-${rowIndex}`}>
+            {columnInfo.map((col) => {
+              const cellId = `${col.columnIndex}-${rowIndex}`
+
+              // Skip if cell was already rendered due to rowSpan
+              if (renderedCells.has(cellId)) return null
+
+              const spans = getHeaderSpans(col, rowIndex)
+              if (!spans) return null
+
+              // Mark cells that will be covered
+              for (let i = 0; i < spans.rowSpan; i++) {
+                for (let j = 0; j < spans.colSpan; j++) {
+                  renderedCells.add(`${col.columnIndex + j}-${rowIndex + i}`)
+                }
+              }
+
+              return (
+                <TableHead key={cellId} rowSpan={spans.rowSpan} colSpan={spans.colSpan}>
+                  {col.headerValues[rowIndex]}
+                </TableHead>
+              )
+            })}
+          </TableRow>
+        ))}
+      </TableHeader>
+    )
+  }
+
   if (loading) {
     return (
       <section data-section="loading-sheet-tire" className="space-y-3">
@@ -86,53 +171,13 @@ export default function Sheet({token}: {token: string}) {
     )
   }
 
-  // Extract column information
   const columnInfo = data[token].identifiedColumnsInfo
   const tireData = data[token].data
 
   return (
-    <section data-section="sheet-tire" className="overflow-x-auto">
+    <section data-section="sheet-tire" data-token={token} className="relative w-full overflow-x-auto">
       <Table>
-        <TableCaption>Tire specifications and load capacity details.</TableCaption>
-        <TableHeader>
-          {/* First header row */}
-          <TableRow>
-            {columnInfo.map((col, index) => {
-              // Skip empty header cells
-              if (!col.headerValues[0] && index > 0) return null
-
-              // Calculate colspan based on consecutive empty headers
-              let colspan = 1
-              if (index < columnInfo.length - 1) {
-                let nextIndex = index + 1
-                while (nextIndex < columnInfo.length && !columnInfo[nextIndex].headerValues[0]) {
-                  colspan++
-                  nextIndex++
-                }
-              }
-
-              return (
-                <TableHead key={`header1-${index}`} colSpan={colspan}>
-                  {col.headerValues[0]}
-                </TableHead>
-              )
-            })}
-          </TableRow>
-
-          {/* Second header row */}
-          <TableRow>
-            {columnInfo.map((col, index) => (
-              <TableHead key={`header2-${index}`}>{col.headerValues[1]}</TableHead>
-            ))}
-          </TableRow>
-
-          {/* Third header row (if needed) */}
-          <TableRow>
-            {columnInfo.map((col, index) => (
-              <TableHead key={`header3-${index}`}>{col.headerValues[2]}</TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
+        <SheetHeader />
 
         <TableBody>
           {tireData.map((row, rowIndex) => (

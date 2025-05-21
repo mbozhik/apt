@@ -46,6 +46,25 @@ export const tire = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'description',
+      title: 'Описание',
+      description: 'Максимальная длина: 200 символов',
+      type: 'text',
+      rows: 4,
+      validation: (rule) =>
+        rule.required().custom((text) => {
+          if (!text) return true
+
+          const charCount = text.length
+
+          if (charCount > 200) {
+            return `Превышен лимит символов (${charCount}/200)`
+          }
+
+          return true
+        }),
+    }),
+    defineField({
       name: 'image',
       title: 'Изображение',
       type: 'image',

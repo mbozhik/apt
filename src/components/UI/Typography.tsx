@@ -26,7 +26,7 @@ export const typoClasses = {
   h4: 'text-4xl xl:text-3xl sm:text-[28px] font-medium',
   h5: 'text-2xl xl:text-xl',
   p: 'text-xl xl:text-lg !leading-[1.3] sm:!leading-[1.4]',
-  span: 'text-base xl:text-sm sm:text-base !leading-[1.3] sm:!leading-[1.4]',
+  span: 'text-lg xl:text-base !leading-[1.3] sm:!leading-[1.4]',
 } as const
 
 export const H1 = createTypography('h1')

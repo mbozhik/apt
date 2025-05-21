@@ -17,7 +17,7 @@ export function CatalogCard({data, view, className}: {data: TIRE_QUERYResult[num
   return (
     <div data-block="card-catalog-index" className={cn('p-10 xl:p-6 sm:p-3.5 sm:pb-6 flex flex-col gap-8 sm:gap-6', 'bg-white text-black', className)}>
       <div className={cn(isFull ? 'flex justify-between sm:flex-col sm:gap-4' : 'flex flex-col items-center gap-10 xl:gap-12 sm:gap-4')}>
-        <div className={cn(isFull ? 'space-y-8 sm:space-y-3' : 'space-y-3 sm:space-y-2')}>
+        <div className={cn('flex flex-col', isFull ? 'gap-6 sm:gap-3' : 'gap-3 sm:gap-2')}>
           {!isFull && (
             <SPAN className="block" offset={0}>
               ДЛЯ ТЕХ, КТО ЛЮБИТ ПОРЯДОК
@@ -25,6 +25,8 @@ export function CatalogCard({data, view, className}: {data: TIRE_QUERYResult[num
           )}
 
           <H3 className="text-orange">{data?.naming}</H3>
+
+          {isFull && <SPAN className="max-w-[55ch] xl:max-w-[35ch]">{data?.description}</SPAN>}
 
           {isFull && (
             <Link href={`/tire/${data?.slug?.current}`} className={cn('w-fit flex items-center gap-2', typoClasses.h5, 'pb-0.5 border-b-2 border-b-black', 'group')}>
@@ -36,18 +38,6 @@ export function CatalogCard({data, view, className}: {data: TIRE_QUERYResult[num
 
         <div className={cn('relative size-48 sm:size-full xl:aspect-square', isFull ? 'size-48' : 'size-[30rem] xl:size-[27rem] sm:size-[20rem]')}>{data?.image && <Image className="object-contain" src={urlFor(data?.image).url()} alt={data?.naming} fill />} </div>
       </div>
-
-      {isFull && (
-        <div className="grid grid-cols-2 gap-6 sm:grid-cols-1 sm:gap-4">
-          {data?.descriptors?.map((item, index) => (
-            <div key={index} className="relative flex gap-3">
-              <div className="min-w-0.5 bg-orange h-full" />
-
-              <SPAN className="flex-1 text-black/50">{item}</SPAN>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   )
 }

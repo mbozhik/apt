@@ -1,6 +1,6 @@
 'use client'
 
-import type {TIRE_QUERYResult, TIRE_ITEM_QUERYResult} from '@/sanity/lib/requests'
+import type {TIRE_QUERYResult, TIRE_ITEM_QUERYResult, COLLECTION_ITEM_QUERYResult} from '@/sanity/lib/requests'
 
 import {motion} from 'motion/react'
 
@@ -42,13 +42,11 @@ export function CatalogCard({data, view, className}: {data: TIRE_QUERYResult[num
   )
 }
 
-export default function Catalog({items, className}: {items: TIRE_QUERYResult; className?: string}) {
-  const sortedItems = items.sort((a, b) => a.id - b.id)
-
+export default function Catalog({data, className}: {data: COLLECTION_ITEM_QUERYResult; className?: string}) {
   return (
     <section data-section="catalog-index" className={cn(className)}>
       <div className={cn('px-6 xl:px-0', 'space-y-8 xl:space-y-6')}>
-        {sortedItems.map((item, idx) => (
+        {data?.tires?.map((item, idx) => (
           <motion.div
             key={idx}
             initial={{opacity: 0, y: idx === 0 ? 0 : 50}} // first not moving

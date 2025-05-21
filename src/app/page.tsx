@@ -1,19 +1,16 @@
-import {getTires} from '@/sanity/lib/requests'
+'use client'
 
-import {PROJECT_CONTAINER} from '@/lib/constants'
-import {cn} from '@/lib/utils'
+import {PROJECT_PATHS} from '@/lib/constants'
+import {redirect} from 'next/navigation'
 
-import Hero from '~~/index/Hero'
-import Catalog from '~~/index/Catalog'
+import {P} from '~/UI/Typography'
 
-export default async function IndexPage() {
-  const tires = await getTires()
+export default function IndexPage() {
+  redirect(PROJECT_PATHS.main)
 
   return (
-    <main className={cn(PROJECT_CONTAINER, 'relative grid grid-cols-2 sm:grid-cols-1 sm:gap-6')}>
-      <Hero />
-
-      <Catalog className="col-start-2 sm:col-start-auto" items={tires} />
+    <main className="grid place-items-center w-full h-screen">
+      <P>редирект на {PROJECT_PATHS.main}</P>
     </main>
   )
 }

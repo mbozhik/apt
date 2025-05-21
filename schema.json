@@ -326,6 +326,102 @@
     }
   },
   {
+    "name": "collection",
+    "type": "document",
+    "attributes": {
+      "_id": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_type": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string",
+          "value": "collection"
+        }
+      },
+      "_createdAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_updatedAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_rev": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "title": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": false
+      },
+      "slug": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "slug"
+        },
+        "optional": false
+      },
+      "tires": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "_ref": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              },
+              "_type": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string",
+                  "value": "reference"
+                }
+              },
+              "_weak": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "boolean"
+                },
+                "optional": true
+              }
+            },
+            "dereferencesTo": "tire",
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      }
+    }
+  },
+  {
     "name": "tire",
     "type": "document",
     "attributes": {
@@ -380,13 +476,6 @@
         "value": {
           "type": "inline",
           "name": "slug"
-        },
-        "optional": false
-      },
-      "id": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "number"
         },
         "optional": false
       },

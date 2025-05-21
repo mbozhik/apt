@@ -1,5 +1,5 @@
-import type {TIRE_QUERYResult, TIRE_ITEM_QUERYResult, COLLECTION_ITEM_QUERYResult} from '../../../sanity.types'
-export type {TIRE_QUERYResult, TIRE_ITEM_QUERYResult, COLLECTION_ITEM_QUERYResult}
+import type {TIRE_QUERYResult, TIRE_ITEM_QUERYResult, COLLECTION_ITEM_QUERYResult, COLLECTION_QUERYResult} from '../../../sanity.types'
+export type {TIRE_QUERYResult, TIRE_ITEM_QUERYResult, COLLECTION_ITEM_QUERYResult, COLLECTION_QUERYResult}
 
 import {sanityFetch} from '@/sanity/lib/live'
 import {defineQuery} from 'next-sanity'
@@ -49,23 +49,29 @@ async function fetchEntityItem<T>(query: string, params?: {slug?: string}, draft
 
 const TIRE_QUERY = defineQuery(`
     *[_type == "tire"]{
-        naming, slug, token, description, image, decoding, descriptors,
+        naming, slug, token, id, description, image, decoding, descriptors,
     }`)
 const TIRE_ITEM_QUERY = defineQuery(`
     *[_type == "tire" && slug.current == $slug][0]{
-        naming, slug, token, description, image, decoding, descriptors,
+        naming, slug, token, id, description, image, decoding, descriptors,
+    }`)
+const COLLECTION_QUERY = defineQuery(`
+    *[_type == "collection"]{
+        title, slug, tires[] -> {naming, slug, token, id, description, image, decoding, descriptors},
     }`)
 const COLLECTION_ITEM_QUERY = defineQuery(`
   *[_type == "collection" && slug.current == $slug][0]{
-      title, slug, tires[] -> {naming, slug, token, description, image, decoding, descriptors},
+      title, slug, tires[] -> {naming, slug, token, id, description, image, decoding, descriptors},
   }`)
 
 const QUERIES = {
   TIRE_QUERY,
   TIRE_ITEM_QUERY,
+  COLLECTION_QUERY,
   COLLECTION_ITEM_QUERY,
 } as const
 
 export const getTires = (): Promise<TIRE_QUERYResult> => fetchEntity(QUERIES.TIRE_QUERY)
 export const getTireItem = (slug: string) => fetchEntityItem<TIRE_ITEM_QUERYResult>(QUERIES.TIRE_ITEM_QUERY, {slug})
+export const getCollections = (): Promise<COLLECTION_QUERYResult> => fetchEntity(QUERIES.COLLECTION_QUERY)
 export const getCollectionItem = (slug: string) => fetchEntityItem<COLLECTION_ITEM_QUERYResult>(QUERIES.COLLECTION_ITEM_QUERY, {slug})

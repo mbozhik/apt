@@ -178,11 +178,12 @@ export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./src/sanity/lib/requests.ts
 // Variable: TIRE_QUERY
-// Query: *[_type == "tire"]{        naming, slug, token, description, image, decoding, descriptors,    }
+// Query: *[_type == "tire"]{        naming, slug, token, id, description, image, decoding, descriptors,    }
 export type TIRE_QUERYResult = Array<{
   naming: string;
   slug: Slug;
   token: Slug;
+  id: null;
   description: string;
   image: {
     asset?: {
@@ -200,11 +201,12 @@ export type TIRE_QUERYResult = Array<{
   descriptors: Array<string> | null;
 }>;
 // Variable: TIRE_ITEM_QUERY
-// Query: *[_type == "tire" && slug.current == $slug][0]{        naming, slug, token, description, image, decoding, descriptors,    }
+// Query: *[_type == "tire" && slug.current == $slug][0]{        naming, slug, token, id, description, image, decoding, descriptors,    }
 export type TIRE_ITEM_QUERYResult = {
   naming: string;
   slug: Slug;
   token: Slug;
+  id: null;
   description: string;
   image: {
     asset?: {
@@ -221,8 +223,35 @@ export type TIRE_ITEM_QUERYResult = {
   decoding: string;
   descriptors: Array<string> | null;
 } | null;
+// Variable: COLLECTION_QUERY
+// Query: *[_type == "collection"]{        title, slug, tires[] -> {naming, slug, token, id, description, image, decoding, descriptors},    }
+export type COLLECTION_QUERYResult = Array<{
+  title: string;
+  slug: Slug;
+  tires: Array<{
+    naming: string;
+    slug: Slug;
+    token: Slug;
+    id: null;
+    description: string;
+    image: {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+    decoding: string;
+    descriptors: Array<string> | null;
+  }> | null;
+}>;
 // Variable: COLLECTION_ITEM_QUERY
-// Query: *[_type == "collection" && slug.current == $slug][0]{      title, slug, tires[] -> {naming, slug, token, description, image, decoding, descriptors},  }
+// Query: *[_type == "collection" && slug.current == $slug][0]{      title, slug, tires[] -> {naming, slug, token, id, description, image, decoding, descriptors},  }
 export type COLLECTION_ITEM_QUERYResult = {
   title: string;
   slug: Slug;
@@ -230,6 +259,7 @@ export type COLLECTION_ITEM_QUERYResult = {
     naming: string;
     slug: Slug;
     token: Slug;
+    id: null;
     description: string;
     image: {
       asset?: {
@@ -252,8 +282,9 @@ export type COLLECTION_ITEM_QUERYResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "\n    *[_type == \"tire\"]{\n        naming, slug, token, description, image, decoding, descriptors,\n    }": TIRE_QUERYResult;
-    "\n    *[_type == \"tire\" && slug.current == $slug][0]{\n        naming, slug, token, description, image, decoding, descriptors,\n    }": TIRE_ITEM_QUERYResult;
-    "\n  *[_type == \"collection\" && slug.current == $slug][0]{\n      title, slug, tires[] -> {naming, slug, token, description, image, decoding, descriptors},\n  }": COLLECTION_ITEM_QUERYResult;
+    "\n    *[_type == \"tire\"]{\n        naming, slug, token, id, description, image, decoding, descriptors,\n    }": TIRE_QUERYResult;
+    "\n    *[_type == \"tire\" && slug.current == $slug][0]{\n        naming, slug, token, id, description, image, decoding, descriptors,\n    }": TIRE_ITEM_QUERYResult;
+    "\n    *[_type == \"collection\"]{\n        title, slug, tires[] -> {naming, slug, token, id, description, image, decoding, descriptors},\n    }": COLLECTION_QUERYResult;
+    "\n  *[_type == \"collection\" && slug.current == $slug][0]{\n      title, slug, tires[] -> {naming, slug, token, id, description, image, decoding, descriptors},\n  }": COLLECTION_ITEM_QUERYResult;
   }
 }

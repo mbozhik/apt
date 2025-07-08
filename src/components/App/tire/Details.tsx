@@ -11,7 +11,7 @@ export default function Details({data}: {data: TIRE_ITEM_QUERYResult}) {
       <div className={cn('col-span-5', 'pt-28 xl:pt-24 sm:pt-0', 'space-y-8 xl:space-y-6 sm:space-y-4')}>
         <H4>Особенности:</H4>
 
-        <P className="font-black">{data?.decoding}</P>
+        {data?.decoding && <P className="font-black">{data?.decoding}</P>}
 
         <div className="sm:px-2 grid grid-cols-2 gap-6 sm:grid-cols-1 sm:gap-4">
           {data?.descriptors?.map((item, idx) => (

@@ -1,6 +1,8 @@
+export const IS_DEV = process.env.NODE_ENV === 'development'
+
 export const PROJECT_PATHS = {
   root: 'https://aptire.ru',
-  main: 'https://aptire.ru',
+  main: 'https://aptire.ru/#catalog',
   catalog: 'https://aptire.ru/#collections',
   contacts: 'https://aptire.ru/#contacts',
 }

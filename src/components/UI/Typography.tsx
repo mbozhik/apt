@@ -27,6 +27,7 @@ export const typoClasses = {
   h5: 'text-2xl xl:text-xl',
   p: 'text-xl xl:text-lg !leading-[1.3] sm:!leading-[1.4]',
   span: 'text-lg xl:text-base !leading-[1.3] sm:!leading-[1.4]',
+  em: 'text-sm not-italic',
 } as const
 
 export const H1 = createTypography('h1')
@@ -36,6 +37,7 @@ export const H4 = createTypography('h4')
 export const H5 = createTypography('h5')
 export const P = createTypography('p')
 export const SPAN = createTypography('span')
+export const EM = createTypography('em')
 
 const variants = {
   item: {

@@ -9,15 +9,25 @@ import {urlFor} from '@/sanity/lib/image'
 
 import Link from 'next/link'
 import Image from 'next/image'
-import {H3, SPAN, typoClasses} from '~/UI/Typography'
+import {EM, H3, SPAN, typoClasses} from '~/UI/Typography'
+
+function CardTag({tag, isFull}: {tag: string | undefined; isFull: boolean}) {
+  return (
+    <div className={cn(isFull && '!-mb-2 sm:!mb-0', 'w-fit px-3 py-1', 'bg-orange text-white')}>
+      <EM className="">{tag}</EM>
+    </div>
+  )
+}
 
 export function CatalogCard({data, view, className}: {data: TIRE_QUERYResult[number] | TIRE_ITEM_QUERYResult; view: 'full' | 'compact'; className?: string}) {
   const isFull = view === 'full'
 
   return (
     <div data-block="card-catalog-index" className={cn('p-10 xl:p-6 sm:p-3.5 sm:pb-6 flex flex-col gap-8 sm:gap-6', 'bg-white text-black', className)}>
-      <div className={cn(isFull ? 'flex justify-between sm:flex-col sm:gap-4' : 'flex flex-col items-center gap-10 xl:gap-12 sm:gap-4')}>
+      <div className={cn(isFull ? 'flex justify-between sm:flex-col sm:gap-4' : 'flex flex-col gap-10 xl:gap-12 sm:gap-4')}>
         <div className={cn('flex flex-col', isFull ? 'gap-6 sm:gap-3' : 'gap-3 sm:gap-2')}>
+          {isFull && <CardTag tag={data?.tag} isFull={isFull} />}
+
           {!isFull && (
             <SPAN className="block" offset={0}>
               ДЛЯ ТЕХ, КТО ЛЮБИТ ПОРЯДОК
@@ -25,6 +35,8 @@ export function CatalogCard({data, view, className}: {data: TIRE_QUERYResult[num
           )}
 
           <H3 className="text-orange">{data?.naming}</H3>
+
+          {!isFull && <CardTag tag={data?.tag} isFull={isFull} />}
 
           {isFull && <SPAN className="max-w-[55ch] xl:max-w-[35ch]">{data?.description}</SPAN>}
 
@@ -36,7 +48,7 @@ export function CatalogCard({data, view, className}: {data: TIRE_QUERYResult[num
           )}
         </div>
 
-        <div className={cn('relative size-48 sm:size-full xl:aspect-square', isFull ? 'size-48' : 'size-[30rem] xl:size-[27rem] sm:size-[20rem]')}>{data?.image && <Image className="object-contain" src={urlFor(data?.image).url()} alt={data?.naming} fill />} </div>
+        <div className={cn('relative size-48 sm:size-full xl:aspect-square', isFull ? 'size-48' : 'self-center size-[30rem] xl:size-[27rem] sm:size-[20rem]')}>{data?.image && <Image className="object-contain" src={urlFor(data?.image).url()} alt={data?.naming} fill />} </div>
       </div>
     </div>
   )

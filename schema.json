@@ -479,6 +479,13 @@
         },
         "optional": false
       },
+      "tag": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": false
+      },
       "description": {
         "type": "objectAttribute",
         "value": {

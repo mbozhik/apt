@@ -49,19 +49,19 @@ async function fetchEntityItem<T>(query: string, params?: {slug?: string}, draft
 
 const TIRE_QUERY = defineQuery(`
     *[_type == "tire"]{
-        naming, slug, token, id, description, image, decoding, descriptors,
+        naming, slug, token, id, tag, description, image, decoding, descriptors,
     }`)
 const TIRE_ITEM_QUERY = defineQuery(`
     *[_type == "tire" && slug.current == $slug][0]{
-        naming, slug, token, id, description, image, decoding, descriptors,
+        naming, slug, token, id, tag, description, image, decoding, descriptors,
     }`)
 const COLLECTION_QUERY = defineQuery(`
     *[_type == "collection"]{
-        title, slug, tires[] -> {naming, slug, token, id, description, image, decoding, descriptors},
+        title, slug, tires[] -> {naming, slug, token, id, tag, description, image, decoding, descriptors},
     }`)
 const COLLECTION_ITEM_QUERY = defineQuery(`
   *[_type == "collection" && slug.current == $slug][0]{
-      title, slug, tires[] -> {naming, slug, token, id, description, image, decoding, descriptors},
+      title, slug, tires[] -> {naming, slug, token, id, tag, description, image, decoding, descriptors},
   }`)
 
 const QUERIES = {

@@ -40,6 +40,12 @@ export const tire = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'tag',
+      title: 'Тег',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
       name: 'description',
       title: 'Описание',
       description: 'Максимальная длина: 200 символов',
@@ -90,13 +96,14 @@ export const tire = defineType({
     select: {
       naming: 'naming',
       token: 'token',
+      tag: 'tag',
       image: 'image',
     },
 
-    prepare({naming, token, image}) {
+    prepare({naming, token, tag, image}) {
       return {
         title: naming,
-        subtitle: `${token.current}`,
+        subtitle: `[${token.current}] — ${tag}`,
         media: image,
       }
     },

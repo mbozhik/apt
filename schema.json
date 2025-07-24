@@ -567,7 +567,7 @@
         "value": {
           "type": "string"
         },
-        "optional": false
+        "optional": true
       },
       "descriptors": {
         "type": "objectAttribute",

@@ -77,7 +77,6 @@ export const tire = defineType({
       title: 'Расшифровка',
       type: 'text',
       rows: 2,
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'descriptors',

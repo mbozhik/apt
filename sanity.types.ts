@@ -108,7 +108,7 @@ export type Tire = {
     crop?: SanityImageCrop;
     _type: "image";
   };
-  decoding: string;
+  decoding?: string;
   descriptors?: Array<string>;
 };
 
@@ -199,7 +199,7 @@ export type TIRE_QUERYResult = Array<{
     crop?: SanityImageCrop;
     _type: "image";
   } | null;
-  decoding: string;
+  decoding: string | null;
   descriptors: Array<string> | null;
 }>;
 // Variable: TIRE_ITEM_QUERY
@@ -223,7 +223,7 @@ export type TIRE_ITEM_QUERYResult = {
     crop?: SanityImageCrop;
     _type: "image";
   } | null;
-  decoding: string;
+  decoding: string | null;
   descriptors: Array<string> | null;
 } | null;
 // Variable: COLLECTION_QUERY
@@ -250,7 +250,7 @@ export type COLLECTION_QUERYResult = Array<{
       crop?: SanityImageCrop;
       _type: "image";
     } | null;
-    decoding: string;
+    decoding: string | null;
     descriptors: Array<string> | null;
   }> | null;
 }>;
@@ -278,7 +278,7 @@ export type COLLECTION_ITEM_QUERYResult = {
       crop?: SanityImageCrop;
       _type: "image";
     } | null;
-    decoding: string;
+    decoding: string | null;
     descriptors: Array<string> | null;
   }> | null;
 } | null;

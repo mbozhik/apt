@@ -3,6 +3,8 @@
 import LogoImage from '$/logo.svg'
 
 import {PROJECT_CONTAINER, PROJECT_PATHS} from '@/lib/constants'
+import {IS_DEV} from '@/lib/constants'
+
 import {cn} from '@/lib/utils'
 
 import {usePathname} from 'next/navigation'
@@ -31,6 +33,12 @@ export default function Header() {
               </Link>
             )
           })}
+
+          {IS_DEV && (
+            <Link href="/resources" className="text-white/50 hover:underline text-lg sm:text-base">
+              Ресурсы
+            </Link>
+          )}
         </div>
       </nav>
     </header>

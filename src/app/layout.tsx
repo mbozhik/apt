@@ -1,7 +1,9 @@
 export {metadata} from '@/lib/layout-config'
 import {manrope} from '@/lib/layout-config'
 
-import './globals.css'
+import '@/app/globals.css'
+
+import {SanityLive} from '@/sanity/lib/live'
 
 import Header from '~/Global/Header'
 
@@ -16,6 +18,8 @@ export default function RootLayout({
         <Header />
 
         {children}
+
+        <SanityLive />
       </body>
     </html>
   )

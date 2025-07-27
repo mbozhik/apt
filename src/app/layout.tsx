@@ -4,6 +4,7 @@ import {manrope} from '@/lib/layout-config'
 import '@/app/globals.css'
 
 import {SanityLive} from '@/sanity/lib/live'
+import YandexMetrika from '~/Global/Analytics'
 
 import Header from '~/Global/Header'
 
@@ -20,6 +21,7 @@ export default function RootLayout({
         {children}
 
         <SanityLive />
+        {process.env.NODE_ENV === 'production' && <YandexMetrika />}
       </body>
     </html>
   )

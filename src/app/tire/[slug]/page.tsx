@@ -19,6 +19,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
 
   return {
     title: tire?.naming,
+    description: tire?.description,
   }
 }
 

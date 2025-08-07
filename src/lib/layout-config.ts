@@ -3,7 +3,11 @@ import type {Metadata} from 'next'
 import {Manrope} from 'next/font/google'
 
 export const metadata: Metadata = {
-  title: 'APT',
+  title: {
+    template: '%s — APT',
+    default: 'APT',
+  },
+  description: 'Надежные шины для вашего бизнеса',
 }
 
 export const manrope = Manrope({

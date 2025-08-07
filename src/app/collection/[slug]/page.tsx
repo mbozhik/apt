@@ -5,8 +5,8 @@ import {getCollectionItem} from '@/sanity/lib/requests'
 
 import {cn} from '@/lib/utils'
 
-import Hero from '~~/index/Hero'
-import Catalog from '~~/index/Catalog'
+import Hero from '~~/collection/Hero'
+import Catalog from '~~/collection/Catalog'
 
 type Props = {
   params: Promise<{slug: string}>

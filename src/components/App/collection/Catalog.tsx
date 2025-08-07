@@ -9,7 +9,7 @@ import {urlFor} from '@/sanity/lib/image'
 
 import Link from 'next/link'
 import Image from 'next/image'
-import {EM, H3, SPAN, typoClasses} from '~/UI/Typography'
+import {H3, P, SPAN, EM, typoClasses} from '~/UI/Typography'
 
 function CardTag({tag, isFull}: {tag: string | undefined; isFull: boolean}) {
   return (
@@ -58,17 +58,23 @@ export default function Catalog({data, className}: {data: COLLECTION_ITEM_QUERYR
   return (
     <section data-section="catalog-index" className={cn(className)}>
       <div className={cn('px-6 xl:px-0', 'space-y-8 xl:space-y-6')}>
-        {data?.tires?.map((item, idx) => (
-          <motion.div
-            key={idx}
-            initial={{opacity: 0, y: idx === 0 ? 0 : 50}} // first not moving
-            whileInView={{opacity: 1, y: 0}}
-            transition={{duration: 0.5, delay: idx * 0.1}}
-            viewport={{once: true}}
-          >
-            <CatalogCard data={item} view="full" />
-          </motion.div>
-        ))}
+        {data?.tires?.length ? (
+          data.tires.map((item, idx) => (
+            <motion.div
+              key={idx}
+              initial={{opacity: 0, y: idx === 0 ? 0 : 50}} // first not moving
+              whileInView={{opacity: 1, y: 0}}
+              transition={{duration: 0.5, delay: idx * 0.1}}
+              viewport={{once: true}}
+            >
+              <CatalogCard data={item} view="full" />
+            </motion.div>
+          ))
+        ) : (
+          <div className={cn('grid place-items-center', 'min-h-screen sm:min-h-[50vh]', 'bg-white/1 text-orange')}>
+            <P offset={0}>Пока шины не добавлены</P>
+          </div>
+        )}
       </div>
     </section>
   )

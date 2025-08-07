@@ -3,7 +3,7 @@ import type {TIRE_ITEM_QUERYResult} from '@/sanity/lib/requests'
 import {cn} from '@/lib/utils'
 
 import {H4, P} from '~/UI/Typography'
-import {CatalogCard} from '~~/index/Catalog'
+import {CatalogCard} from '~~/collection/Catalog'
 
 export default function Details({data}: {data: TIRE_ITEM_QUERYResult}) {
   return (

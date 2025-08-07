@@ -5,7 +5,6 @@ import {ArrowLeft, ArrowRight, RefreshCw} from 'lucide-react'
 import {cn} from '@/lib/utils'
 
 import {useRef} from 'react'
-import {useRouter} from 'next/navigation'
 
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow, CELL_STYLES} from '~/UI/Table'
 import {P} from '~/UI/Typography'
@@ -24,11 +23,11 @@ interface SheetDataProps {
   token: string
   initialData: SheetDataType | null
   initialError: string | null
+  revalidate: (token: string) => Promise<void>
 }
 
-export default function SheetData({token, initialData, initialError}: SheetDataProps) {
+export default function SheetData({token, initialData, initialError, revalidate}: SheetDataProps) {
   const containerRef = useRef<HTMLTableElement>(null)
-  const router = useRouter()
 
   const sheetData = initialData
   const error = initialError
@@ -139,7 +138,7 @@ export default function SheetData({token, initialData, initialError}: SheetDataP
   }
 
   const handleRefetch = () => {
-    router.refresh()
+    revalidate(`sheet-data-${token.toLowerCase()}`)
   }
 
   if (error) {

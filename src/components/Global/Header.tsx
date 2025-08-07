@@ -18,8 +18,8 @@ export default function Header() {
 
   return (
     <header className={cn(PROJECT_CONTAINER, isFixed ? 'fixed' : 'absolute', 'top-0 left-0 right-0 z-[99]', 'sm:bg-black')}>
-      <nav className={cn('w-[40%] xl:w-[45%] sm:w-full', 'flex justify-between items-center gap-20 sm:gap-6')}>
-        <Link href={PROJECT_PATHS.root}>
+      <nav className={cn('w-[40%] xl:w-[45%] sm:w-full', 'flex justify-between items-center gap-20 sm:gap-24')}>
+        <Link href={PROJECT_PATHS.main}>
           <Image src={LogoImage} alt="Логотип APT" />
         </Link>
 
@@ -28,7 +28,7 @@ export default function Header() {
             if (key === 'root') return null
 
             return (
-              <Link href={path} className="hover:underline text-lg sm:text-base" key={key}>
+              <Link href={path} className={cn('hover:underline text-lg sm:text-base', key === 'main' && 'sm:hidden')} key={key}>
                 {key === 'main' ? 'Главная' : key === 'catalog' ? 'Каталог' : key === 'contacts' ? 'Контакты' : ''}
               </Link>
             )

@@ -52,16 +52,24 @@ function TireSkeleton() {
 }
 
 async function TireContent({params}: Props) {
+  'use cache'
+  
+  console.log('[TireContent] Starting to fetch data for slug:', (await params).slug)
+  
   const slug = (await params).slug
   const tire = await getTireItem(slug)
+  
+  console.log('[TireContent] Tire data fetched:', {
+    naming: tire?.naming,
+    token: tire?.token?.current,
+    timestamp: new Date().toISOString()
+  })
 
   return (
     <main className={cn(PROJECT_CONTAINER, 'space-y-20 sm:space-y-14')}>
       <Details data={tire} />
 
-      <Suspense fallback={<SheetSkeleton />}>
-        <Sheet token={tire?.token.current as string} />
-      </Suspense>
+      <Sheet token={tire?.token.current as string} />
     </main>
   )
 }

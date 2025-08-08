@@ -19,6 +19,7 @@ async function fetchSheetData(token: string): Promise<{data: SheetDataType | nul
 
   console.log('[fetchSheetData] Starting fetch for token:', token, 'at', new Date().toISOString())
 
+  cacheTag(`sheet-data-${token.toLowerCase()}`)
   cacheLife({
     stale: 604800, // 7 days
     revalidate: 86400, // 1 day
@@ -31,8 +32,6 @@ async function fetchSheetData(token: string): Promise<{data: SheetDataType | nul
       console.log('[fetchSheetData] ERROR: Google Sheets URL not configured')
       return {data: null, error: 'Google Sheets URL not configured'}
     }
-
-    cacheTag(`sheet-data-${token.toLowerCase()}`)
 
     console.log('[fetchSheetData] Making request to Google Sheets API for token:', token)
 

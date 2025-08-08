@@ -138,7 +138,7 @@ export default function SheetData({token, initialData, initialError, revalidate}
   }
 
   const handleRefetch = () => {
-    revalidate(`sheet-data-${token.toLowerCase()}`)
+    revalidate(token)
   }
 
   if (error) {

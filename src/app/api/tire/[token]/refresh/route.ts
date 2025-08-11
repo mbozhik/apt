@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from 'next/server'
 
-import {fetchFromGoogleSheets, saveCachedData} from '@/app/api/tire/[token]/route'
+import {fetchFromGoogleSheets, saveCachedData} from '@/app/api/tire/[token]/utils'
 
 export async function POST(request: NextRequest, {params}: {params: Promise<{token: string}>}) {
   try {

@@ -5,7 +5,9 @@ import {supabase} from '@/lib/supabase'
 import {NextRequest, NextResponse} from 'next/server'
 import axios from 'axios'
 
-async function fetchFromGoogleSheets(token: string): Promise<SheetTable | null> {
+const STALE_THRESHOLD_DAYS = 7
+
+export async function fetchFromGoogleSheets(token: string): Promise<SheetTable | null> {
   try {
     const SHEET_URL = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_URL
     if (!SHEET_URL) {
@@ -39,7 +41,7 @@ async function getCachedData(token: string): Promise<CachedSheet | null> {
   return data
 }
 
-async function saveCachedData(token: string, sheetTable: SheetTable): Promise<void> {
+export async function saveCachedData(token: string, sheetTable: SheetTable): Promise<void> {
   const {error} = await supabase.from('tire_cache').upsert(
     {
       token: token,
@@ -61,7 +63,7 @@ function isDataStale(cachedData: CachedSheet): boolean {
   const cacheDate = new Date(cachedData.updated_at)
   const now = new Date()
   const diffInDays = (now.getTime() - cacheDate.getTime()) / (1000 * 60 * 60 * 24)
-  return diffInDays >= 7
+  return diffInDays >= STALE_THRESHOLD_DAYS
 }
 
 async function updateDataInBackground(token: string): Promise<void> {
@@ -104,7 +106,9 @@ export async function GET(request: NextRequest, {params}: {params: Promise<{toke
     // Проверяем актуальность данных
     if (isDataStale(cachedData)) {
       // Данные устарели - возвращаем кэш и обновляем в фоне
-      updateDataInBackground(token) // Не ждем завершения
+      updateDataInBackground(token).catch((error) => {
+        console.error('Background updateDataInBackground error:', error)
+      }) // Не ждем завершения
 
       return NextResponse.json({
         data: cachedData.data,

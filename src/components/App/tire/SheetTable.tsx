@@ -2,35 +2,29 @@
 
 import {ArrowLeft, ArrowRight, RefreshCw} from 'lucide-react'
 
+import type {SheetTable} from '~~/tire/Sheet'
+
 import {cn} from '@/lib/utils'
 
-import {useRef} from 'react'
+import {useRef, useState} from 'react'
+import axios from 'axios'
 
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow, CELL_STYLES} from '~/UI/Table'
 import {P} from '~/UI/Typography'
 
-type SheetDataType = {
-  identifiedColumnsInfo: {
-    columnIndex: number
-    headerValues: string[]
-  }[]
-  data: {
-    [key: string]: string | number
-  }[]
-}
-
-interface SheetDataProps {
+type Props = {
   token: string
-  initialData: SheetDataType | null
+  initialData: SheetTable | null
   initialError: string | null
-  revalidate: (token: string) => Promise<void>
+  cached?: boolean
+  stale?: boolean
 }
 
-export default function SheetData({token, initialData, initialError, revalidate}: SheetDataProps) {
+export default function SheetData({token, initialData, initialError, cached, stale}: Props) {
   const containerRef = useRef<HTMLTableElement>(null)
-
-  const sheetData = initialData
-  const error = initialError
+  const [isRefetching, setIsRefetching] = useState(false)
+  const [sheetData, setSheetData] = useState(initialData)
+  const [error, setError] = useState(initialError)
 
   const renderCellValue = (value: string | number) => {
     if (value === 'x') {
@@ -137,18 +131,37 @@ export default function SheetData({token, initialData, initialError, revalidate}
     })
   }
 
-  const handleRefetch = () => {
-    revalidate(`sheet-data-${token.toLowerCase()}`)
+  const handleRefetch = async () => {
+    setIsRefetching(true)
+    setError(null)
+
+    try {
+      const response = await axios.post(`/api/tire/${encodeURIComponent(token)}/refresh`, {
+        timeout: 20000,
+      })
+
+      setSheetData(response.data.data)
+      setError(null)
+    } catch (error) {
+      console.error('Error refetching data:', error)
+
+      const errorMessage = axios.isAxiosError(error) && error.response?.data?.error ? error.response.data.error : 'Failed to refresh data'
+
+      setError(errorMessage)
+    } finally {
+      setIsRefetching(false)
+    }
   }
 
   if (error) {
     return (
       <section data-section="error-sheet-tire" className="p-4 space-y-1.5 bg-orange text-white rounded-lg">
         <P className="text-center">{error}</P>
+
         <div className="flex justify-center">
-          <button onClick={handleRefetch} className="flex items-center gap-2 text-white underline hover:opacity-80 transition-opacity">
-            <RefreshCw className="size-4" />
-            Повторить попытку
+          <button onClick={handleRefetch} disabled={isRefetching} className="flex items-center gap-2 text-white underline hover:opacity-80 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">
+            <RefreshCw className={cn('size-4', isRefetching && 'animate-spin')} />
+            {isRefetching ? 'Загрузка...' : 'Повторить попытку'}
           </button>
         </div>
       </section>
@@ -169,10 +182,14 @@ export default function SheetData({token, initialData, initialError, revalidate}
   return (
     <section data-section="sheet-tire" data-token={token} className={cn('relative w-full', 'space-y-4')}>
       <div data-block="controllers-sheet-tire" className="flex gap-1 sm:gap-4 items-end justify-between">
-        <button onClick={handleRefetch} className="flex items-center gap-1 text-orange hover:opacity-80 transition-opacity cursor-pointer" title="Обновить данные">
-          <RefreshCw className="size-3" />
-          Обновить
-        </button>
+        <div className="flex flex-col gap-1">
+          <button onClick={handleRefetch} disabled={isRefetching} className="flex items-center gap-1 text-orange hover:opacity-80 transition-opacity cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" title="Обновить данные">
+            <RefreshCw className={cn('size-3', isRefetching && 'animate-spin')} />
+            {isRefetching ? 'Обновление...' : 'Обновить'}
+          </button>
+
+          {/* {(cached || stale) && <div className="text-xs text-gray-500">{stale ? <span className="text-orange">Данные устарели, обновляются в фоне</span> : cached ? <span>Данные из кэша</span> : null}</div>} */}
+        </div>
 
         <div className="flex gap-1 sm:gap-4">
           <ArrowLeft onClick={() => scroll('left')} className="size-8 hover:text-orange duration-200 cursor-pointer" strokeWidth={1.7} />

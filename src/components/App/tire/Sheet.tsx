@@ -1,10 +1,8 @@
-import {unstable_cacheTag as cacheTag, unstable_cacheLife as cacheLife, revalidateTag} from 'next/cache'
+import SheetData from '~~/tire/SheetTable'
 
 import axios from 'axios'
 
-import SheetData from '~~/tire/SheetData'
-
-type SheetDataType = {
+export type SheetTable = {
   identifiedColumnsInfo: {
     columnIndex: number
     headerValues: string[]
@@ -14,47 +12,55 @@ type SheetDataType = {
   }[]
 }
 
-async function fetchSheetData(token: string): Promise<{data: SheetDataType | null; error: string | null}> {
-  'use cache'
+export type CachedSheet = {
+  id: string
+  token: string
+  data: SheetTable
+  created_at: string
+  updated_at: string
+}
 
-  cacheLife({
-    stale: 604800, // 7 days
-    revalidate: 86400, // 1 day
-    expire: 1209600, // 14 days
-  })
+type CachedSheetResponse = {
+  data: SheetTable
+  cached?: boolean
+  stale?: boolean
+  lastUpdated?: string
+  error?: string
+}
 
+async function getSheetData(token: string): Promise<{data: SheetTable | null; error: string | null; cached?: boolean; stale?: boolean}> {
   try {
-    const SHEET_URL = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_URL
-    if (!SHEET_URL) {
-      return {data: null, error: 'Google Sheets URL not configured'}
-    }
+    const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
 
-    cacheTag(`sheet-data-${token.toLowerCase()}`)
-
-    const response = await axios.get<{[key: string]: SheetDataType}>(SHEET_URL, {
+    const response = await axios.get<CachedSheetResponse>(`${baseUrl}/api/tire/${encodeURIComponent(token)}`, {
       timeout: 20000,
-
-      validateStatus: (status) => status < 500,
     })
 
-    const responseData = response.data
+    const apiResponse = response.data
 
-    if (!responseData || !responseData[token]) {
-      return {data: null, error: `Data for token "${token}" not found`}
+    if (apiResponse.error) {
+      return {data: null, error: apiResponse.error}
     }
 
-    return {data: responseData[token], error: null}
+    return {
+      data: apiResponse.data,
+      error: null,
+      cached: apiResponse.cached,
+      stale: apiResponse.stale,
+    }
   } catch (error) {
     console.error('Error fetching sheet data:', error)
 
     if (axios.isAxiosError(error)) {
       if (error.code === 'ECONNABORTED') {
-        return {data: null, error: 'The waiting time for a response from Google Sheets has been exceeded. Try again later.'}
+        return {data: null, error: 'Request timeout. Please try again.'}
       }
       if (error.response) {
-        return {data: null, error: `Server error: ${error.response.status}`}
-      } else if (error.request) {
-        return {data: null, error: 'Network error or Google Sheets is not responding'}
+        const errorData = error.response.data as {error?: string}
+        return {data: null, error: errorData.error || `Server error: ${error.response.status}`}
+      }
+      if (error.request) {
+        return {data: null, error: 'Network error. Please check your connection.'}
       }
     }
 
@@ -62,14 +68,8 @@ async function fetchSheetData(token: string): Promise<{data: SheetDataType | nul
   }
 }
 
-async function revalidateSheetData(token: string): Promise<void> {
-  'use server'
-
-  revalidateTag(`sheet-data-${token.toLowerCase()}`)
-}
-
 export default async function Sheet({token}: {token: string}) {
-  const {data, error} = await fetchSheetData(token)
+  const {data, error, cached, stale} = await getSheetData(token)
 
-  return <SheetData token={token} initialData={data} initialError={error} revalidate={revalidateSheetData} />
+  return <SheetData token={token} initialData={data} initialError={error} cached={cached} stale={stale} />
 }

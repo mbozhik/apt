@@ -1,6 +1,5 @@
 import SheetData from '~~/tire/SheetTable'
-
-import axios from 'axios'
+import {fetchFromGoogleSheets, getCachedData, saveCachedData, isDataStale, updateDataInBackground} from '@/app/api/tire/[token]/utils'
 
 export type SheetTable = {
   identifiedColumnsInfo: {
@@ -20,48 +19,67 @@ export type CachedSheet = {
   updated_at: string
 }
 
-type CachedSheetResponse = {
-  data: SheetTable
-  cached?: boolean
-  stale?: boolean
-  lastUpdated?: string
-  error?: string
-}
-
 async function getSheetData(token: string): Promise<{data: SheetTable | null; error: string | null; cached?: boolean; stale?: boolean}> {
   try {
-    const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
+    console.log(`🔍 Server-side: Getting sheet data for token: ${token}`)
 
-    const response = await axios.get<CachedSheetResponse>(`${baseUrl}/api/tire/${encodeURIComponent(token)}`, {
-      timeout: 20000,
-    })
+    // Get cached data first
+    const cachedData = await getCachedData(token)
 
-    const apiResponse = response.data
+    if (!cachedData) {
+      // No cache - fetch fresh data
+      console.log(`📭 No cached data found, fetching fresh data for token: ${token}`)
 
-    if (apiResponse.error) {
-      return {data: null, error: apiResponse.error}
+      try {
+        const freshData = await fetchFromGoogleSheets(token)
+        if (!freshData) {
+          return {data: null, error: `Data for token "${token}" not found`}
+        }
+
+        // Save to cache for next time
+        try {
+          await saveCachedData(token, freshData)
+          console.log(`💾 Saved fresh data to cache for token: ${token}`)
+        } catch (saveError) {
+          console.error('Failed to save to cache, but continuing with fresh data:', saveError)
+        }
+
+        return {data: freshData, error: null, cached: false}
+      } catch (error) {
+        console.error('Error fetching fresh data:', error)
+        return {data: null, error: 'Failed to fetch data from Google Sheets'}
+      }
     }
 
+    // Check if data is stale
+    if (isDataStale(cachedData)) {
+      console.log(`⏰ Data is stale for token: ${token}, starting background update`)
+      // Start background update but don't wait for it
+      updateDataInBackground(token).catch((error) => {
+        console.error('Background update failed:', error)
+      })
+
+      return {
+        data: cachedData.data,
+        error: null,
+        cached: true,
+        stale: true,
+      }
+    }
+
+    // Fresh cached data
+    console.log(`✅ Returning fresh cached data for token: ${token}`)
     return {
-      data: apiResponse.data,
+      data: cachedData.data,
       error: null,
-      cached: apiResponse.cached,
-      stale: apiResponse.stale,
+      cached: true,
+      stale: false,
     }
   } catch (error) {
-    console.error('Error fetching sheet data:', error)
+    console.error('❌ Server-side error fetching sheet data:', error)
 
-    if (axios.isAxiosError(error)) {
-      if (error.code === 'ECONNABORTED') {
-        return {data: null, error: 'Request timeout. Please try again.'}
-      }
-      if (error.response) {
-        const errorData = error.response.data as {error?: string}
-        return {data: null, error: errorData.error || `Server error: ${error.response.status}`}
-      }
-      if (error.request) {
-        return {data: null, error: 'Network error. Please check your connection.'}
-      }
+    if (error instanceof Error) {
+      return {data: null, error: error.message}
     }
 
     return {data: null, error: 'Internal server error'}

@@ -1,5 +1,5 @@
 import SheetData from '~~/tire/SheetTable'
-import {fetchFromGoogleSheets, getCachedData, saveCachedData, isDataStale, updateDataInBackground} from '@/app/api/tire/[token]/utils'
+import {getCachedData, isDataStale} from '@/app/api/tire/[token]/utils'
 
 export type SheetTable = {
   identifiedColumnsInfo: {
@@ -21,72 +21,36 @@ export type CachedSheet = {
 
 async function getSheetData(token: string): Promise<{data: SheetTable | null; error: string | null; cached?: boolean; stale?: boolean}> {
   try {
-    console.log(`🔍 Server-side: Getting sheet data for token: ${token}`)
-
-    // Get cached data first
+    // Validate token
+    if (!token || token === 'undefined' || token === 'null') {
+      console.error(`❌ Invalid token: "${token}"`)
+      return {data: null, error: 'Invalid or missing token'}
+    }
+    
+    // Only get cached data, no automatic fetching
     const cachedData = await getCachedData(token)
 
     if (!cachedData) {
-      // No cache - fetch fresh data
-      console.log(`📭 No cached data found, fetching fresh data for token: ${token}`)
-
-      try {
-        const freshData = await fetchFromGoogleSheets(token)
-        if (!freshData) {
-          return {data: null, error: `Data for token "${token}" not found`}
-        }
-
-        // Save to cache for next time
-        try {
-          await saveCachedData(token, freshData)
-          console.log(`💾 Saved fresh data to cache for token: ${token}`)
-        } catch (saveError) {
-          console.error('Failed to save to cache, but continuing with fresh data:', saveError)
-        }
-
-        return {data: freshData, error: null, cached: false}
-      } catch (error) {
-        console.error('Error fetching fresh data:', error)
-        return {data: null, error: 'Failed to fetch data from Google Sheets'}
-      }
-    }
-
-    // Check if data is stale
-    if (isDataStale(cachedData)) {
-      console.log(`⏰ Data is stale for token: ${token}, starting background update`)
-      // Start background update but don't wait for it
-      updateDataInBackground(token).catch((error) => {
-        console.error('Background update failed:', error)
-      })
-
+      console.log(`📭 No cached data for token: ${token}`)
       return {
-        data: cachedData.data,
-        error: null,
-        cached: true,
-        stale: true,
+        data: null, 
+        error: 'Нет данных в кэше. Нажмите кнопку обновления для загрузки.',
+        cached: false
       }
     }
 
-    // Fresh cached data
-    console.log(`✅ Returning fresh cached data for token: ${token}`)
+    // Return cached data regardless of age
     return {
       data: cachedData.data,
       error: null,
       cached: true,
-      stale: false,
+      stale: isDataStale(cachedData), // Just for display purposes
     }
   } catch (error) {
-    console.error('❌ Server-side error fetching sheet data:', error)
-
-    if (error instanceof Error) {
-      return {data: null, error: error.message}
-    }
-
-    return {data: null, error: 'Internal server error'}
+    console.error('❌ Error getting cached data:', error)
+    return {data: null, error: 'Ошибка получения данных из кэша'}
   }
-}
-
-export default async function Sheet({token}: {token: string}) {
+}export default async function Sheet({token}: {token: string}) {
   const {data, error, cached, stale} = await getSheetData(token)
 
   return <SheetData token={token} initialData={data} initialError={error} cached={cached} stale={stale} />

@@ -27,12 +27,21 @@ export default async function TireItemPage({params}: Props) {
   const slug = (await params).slug
   const tire = await getTireItem(slug)
 
+  if (!tire) {
+    return <div>Tire not found</div>
+  }
+
+  if (!tire.token?.current) {
+    console.error(`❌ No token for tire: ${tire.naming}`)
+    return <div>Token not configured for this tire</div>
+  }
+
   return (
     <main className={cn(PROJECT_CONTAINER, 'space-y-20 sm:space-y-14')}>
       <Details data={tire} />
 
       <Suspense fallback={<SheetSkeleton />}>
-        <Sheet token={tire?.token.current as string} />
+        <Sheet token={tire.token.current} />
       </Suspense>
     </main>
   )
